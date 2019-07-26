@@ -12,7 +12,10 @@ android {
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
+        buildConfigField "String", "SEND_GRID_API_KEY", getSendGridApiKey()
     }
+    useLibrary 'org.apache.http.legacy'
+
     dataBinding {
         enabled = true
     }
@@ -22,6 +25,16 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    packagingOptions {
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+    }
+}
+
+def getSendGridApiKey() {
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    return "\"${properties.getProperty("sendGridApiKey")}\"";
 }
 
 dependencies {
@@ -30,4 +43,7 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.1.0-beta01'
     implementation 'androidx.appcompat:appcompat:1.1.0-rc01'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta2'
+    implementation 'com.github.danysantiago:sendgrid-android:1', {
+        exclude group: 'org.apache.httpcomponents', module: 'httpclient'
+    }
 }

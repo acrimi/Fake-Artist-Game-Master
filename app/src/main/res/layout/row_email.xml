@@ -16,7 +16,7 @@
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="16dp"
         android:text="@={emails[position]}"
-        android:hint="@{`Player ` + position + ` email`}">
+        android:hint="@{`Player ` + (position + 1)+ ` email`}">
 
     </EditText>
 </layout>

@@ -12,7 +12,7 @@ private const val ITEM_TYPE_EMAIL = 1
 private const val ITEM_TYPE_ADD = 2
 
 class EmailAdapter : RecyclerView.Adapter<EmailAdapter.EmailViewHolder>() {
-    private val emails = mutableListOf(ObservableField<String>())
+    val emails = mutableListOf(ObservableField<String>())
 
     fun reset() {
         emails.clear()
