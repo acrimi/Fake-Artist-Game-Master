@@ -45,14 +45,6 @@ class WordGenerator {
     fun generateNewWord(): String? {
         val category = getRandomCategoryName() ?: return null
         val url = GENERATOR_URL.format(category)
-
-        var word: String? = null
-        try {
-            word = URL(url).readText().split(',').random()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-
-        return word
+        return URL(url).readText().split(',').random()
     }
 }

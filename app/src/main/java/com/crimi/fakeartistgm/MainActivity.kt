@@ -38,7 +38,14 @@ class MainActivity : AppCompatActivity() {
     fun send(view: View) {
         binding.isSending = true
         Thread {
-            val clue = wordGenerator.generateNewWord() ?: return@Thread notifySendError(IOException("word generation failed"))
+            val clue: String
+            try {
+                clue = wordGenerator.generateNewWord() ?:
+                        return@Thread notifySendError(IOException("word generation failed"))
+            } catch (e: IOException) {
+                notifySendError(e)
+                return@Thread
+            }
             val artists = emailAdapter.emails.shuffled().mapNotNullTo(mutableListOf()) { it.get() }
             val impostor = artists.removeAt(0)
 
@@ -66,11 +73,6 @@ class MainActivity : AppCompatActivity() {
                 notifySendError(e)
             } catch (e: IOException) {
                 notifySendError(e)
-            } finally {
-                runOnUiThread {
-                    binding.isSending = false
-                    binding.executePendingBindings()
-                }
             }
 
         }.start()
@@ -79,6 +81,8 @@ class MainActivity : AppCompatActivity() {
     private fun notifySendSuccess() {
         runOnUiThread {
             Toast.makeText(this, "Clue emails have been sent!", Toast.LENGTH_LONG).show()
+            binding.isSending = false
+            binding.executePendingBindings()
         }
     }
 
@@ -86,6 +90,8 @@ class MainActivity : AppCompatActivity() {
         e.printStackTrace()
         runOnUiThread {
             Toast.makeText(this, "Error sending clues: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
+            binding.isSending = false
+            binding.executePendingBindings()
         }
     }
 }
