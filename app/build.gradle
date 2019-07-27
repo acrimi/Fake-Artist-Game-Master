@@ -12,7 +12,8 @@ android {
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
-        buildConfigField "String", "SEND_GRID_API_KEY", getSendGridApiKey()
+        buildConfigField "String", "SEND_GRID_API_KEY", getLocalProperty("sendGridApiKey")
+        buildConfigField "String", "CUSTOM_SENDER_EMAIL", getLocalProperty("customSenderEmail")
     }
     useLibrary 'org.apache.http.legacy'
 
@@ -31,10 +32,14 @@ android {
     }
 }
 
-def getSendGridApiKey() {
+def getLocalProperty(propertyName) {
     Properties properties = new Properties()
     properties.load(project.rootProject.file('local.properties').newDataInputStream())
-    return "\"${properties.getProperty("sendGridApiKey")}\"";
+    def property = properties.getProperty(propertyName)
+    if (property != null) {
+        return "\"$property\""
+    }
+    return "\"\""
 }
 
 dependencies {

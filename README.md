@@ -15,7 +15,15 @@ The app uses SendGrid to send emails, so you will have to place a valid API Key 
 sendGridApiKey=YOUR_API_KEY_HERE
 ```
 
-(This file is not checked in, you will have to create it manually in the root directory of the project if your IDE does not create it for you)
+By default, the app sends emails from `fakeartistgamebot@example.com`.
+You can optionally customize the sender email in `local.properties` to, for example, use a verified domain to bypass spam filters.
+
+```
+...
+customSenderEmail=noreply@mydomain.com
+```
+
+(`local.properties` is not checked in, you will have to create it manually in the root directory of the project if your IDE does not create it for you)
 
 ## TODO ##
 

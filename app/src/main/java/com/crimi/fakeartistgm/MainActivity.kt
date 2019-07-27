@@ -48,17 +48,21 @@ class MainActivity : AppCompatActivity() {
             }
             val artists = emailAdapter.emails.shuffled().mapNotNullTo(mutableListOf()) { it.get() }
             val impostor = artists.removeAt(0)
+            var sender = BuildConfig.CUSTOM_SENDER_EMAIL
+            if (sender.isEmpty()) {
+                sender = "fakeartistgamebot@example.com"
+            }
 
             val clueEmail = SendGrid.Email()
             clueEmail.addTo(artists.toTypedArray())
-            clueEmail.from = "gamebot@example.com"
+            clueEmail.from = sender
             clueEmail.fromName = "Fake Artist Game Bot"
             clueEmail.subject = "Drawing Clue"
             clueEmail.text = "The drawing clue is: \"$clue\""
 
             val impostorEmail = SendGrid.Email()
             impostorEmail.addTo(impostor)
-            impostorEmail.from = "gamebot@example.com"
+            impostorEmail.from = sender
             impostorEmail.fromName = "Fake Artist Game Bot"
             impostorEmail.subject = "Drawing Clue"
             impostorEmail.text = "You are the fake artist!"
