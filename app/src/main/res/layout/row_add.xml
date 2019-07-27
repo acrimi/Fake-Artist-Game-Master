@@ -4,6 +4,7 @@
     android:layout_height="wrap_content"
     android:layout_margin="24dp"
     android:gravity="center"
+    android:textSize="20sp"
     android:text="+ Add new email"
     android:textColor="#00cece">
 

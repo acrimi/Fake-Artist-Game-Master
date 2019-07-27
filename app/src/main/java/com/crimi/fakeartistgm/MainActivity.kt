@@ -1,7 +1,6 @@
 package com.crimi.fakeartistgm
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -12,7 +11,6 @@ import com.crimi.fakeartistgm.generator.WordGenerator
 import com.sendgrid.SendGrid
 import com.sendgrid.SendGridException
 import java.io.IOException
-import java.lang.Exception
 
 class MainActivity : AppCompatActivity() {
 
