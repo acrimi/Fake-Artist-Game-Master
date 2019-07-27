@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.crimi.fakeartistgm.databinding.ActivityMainBinding
+import com.crimi.fakeartistgm.generator.WordGenerator
 import com.sendgrid.SendGrid
 import com.sendgrid.SendGridException
 import java.io.IOException
@@ -18,10 +19,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private val emailAdapter = EmailAdapter()
     private val sendGrid = SendGrid(BuildConfig.SEND_GRID_API_KEY)
+    private val wordGenerator = WordGenerator()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d("API key", BuildConfig.SEND_GRID_API_KEY)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
         binding.recyclerView.apply {
@@ -36,8 +37,8 @@ class MainActivity : AppCompatActivity() {
 
     fun send(view: View) {
         binding.isSending = true
-        Thread(Runnable {
-            val clue = "volcano" //TODO
+        Thread {
+            val clue = wordGenerator.generateNewWord() ?: return@Thread notifySendError(IOException("word generation failed"))
             val artists = emailAdapter.emails.shuffled().mapNotNullTo(mutableListOf()) { it.get() }
             val impostor = artists.removeAt(0)
 
@@ -56,7 +57,9 @@ class MainActivity : AppCompatActivity() {
             impostorEmail.text = "You are the fake artist!"
 
             try {
-                sendGrid.send(clueEmail)
+                if (artists.size > 0) {
+                    sendGrid.send(clueEmail)
+                }
                 sendGrid.send(impostorEmail)
                 notifySendSuccess()
             } catch (e: SendGridException) {
@@ -70,7 +73,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-        }).start()
+        }.start()
     }
 
     private fun notifySendSuccess() {
