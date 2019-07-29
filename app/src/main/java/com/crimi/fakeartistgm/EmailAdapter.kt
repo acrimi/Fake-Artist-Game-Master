@@ -1,6 +1,5 @@
 package com.crimi.fakeartistgm
 
-import android.database.Observable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

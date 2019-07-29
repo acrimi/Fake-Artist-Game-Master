@@ -1,8 +1,7 @@
 apply plugin: 'com.android.application'
-
 apply plugin: 'kotlin-android'
-
 apply plugin: 'kotlin-android-extensions'
+apply plugin: "kotlin-kapt"
 
 android {
     compileSdkVersion 28
@@ -51,4 +50,6 @@ dependencies {
     implementation 'com.github.danysantiago:sendgrid-android:1', {
         exclude group: 'org.apache.httpcomponents', module: 'httpclient'
     }
+    implementation 'org.parceler:parceler:1.1.12'
+    annotationProcessor 'org.parceler:parceler:1.1.12'
 }

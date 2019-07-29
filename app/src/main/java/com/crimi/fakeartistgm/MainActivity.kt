@@ -1,6 +1,10 @@
 package com.crimi.fakeartistgm
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -10,7 +14,10 @@ import com.crimi.fakeartistgm.databinding.ActivityMainBinding
 import com.crimi.fakeartistgm.generator.WordGenerator
 import com.sendgrid.SendGrid
 import com.sendgrid.SendGridException
+import org.parceler.Parcels
 import java.io.IOException
+
+private const val REQUEST_EDIT_SETTINGS = 1
 
 class MainActivity : AppCompatActivity() {
 
@@ -27,6 +34,32 @@ class MainActivity : AppCompatActivity() {
             layoutManager = LinearLayoutManager(this@MainActivity)
             adapter = emailAdapter
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main_menu, menu)
+        return true
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == REQUEST_EDIT_SETTINGS && resultCode == Activity.RESULT_OK) {
+            wordGenerator.categories = Parcels.unwrap(data?.getParcelableExtra(EXTRA_SETTINGS_CATEGORIES))
+        }
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (item?.itemId == R.id.settings) {
+            settingsClicked()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun settingsClicked() {
+        val intent = Intent(this, SettingsActivity::class.java)
+        intent.putExtra(EXTRA_SETTINGS_CATEGORIES, Parcels.wrap(ArrayList(wordGenerator.categories)))
+        startActivityForResult(intent, REQUEST_EDIT_SETTINGS)
     }
 
     fun reset(view: View) {
