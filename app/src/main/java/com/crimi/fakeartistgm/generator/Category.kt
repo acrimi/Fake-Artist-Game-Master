@@ -7,7 +7,7 @@ import org.parceler.Parcel
 import org.parceler.ParcelConstructor
 
 @Parcel
-data class Category @ParcelConstructor constructor(val name: String, val defaultWeight: Double = 1.0) : BaseObservable() {
+data class Category @ParcelConstructor constructor(val name: String, val id: String, val defaultWeight: Double = 1.0) : BaseObservable() {
     @Bindable
     var weight = defaultWeight
         set(value) {
