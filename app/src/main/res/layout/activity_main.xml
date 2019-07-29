@@ -35,7 +35,7 @@
             android:id="@+id/sendButton"
             android:layout_width="0dp"
             android:layout_height="48dp"
-            android:text="Send Clue"
+            android:text="Send Prompt"
             android:onClick="send"
             android:enabled="@{!isSending}"
             app:layout_constraintStart_toEndOf="@id/resetButton"
