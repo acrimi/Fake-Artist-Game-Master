@@ -1,4 +1,4 @@
-# Fake-Artist-Game-Master
+# Fake Artist Game Master
 This is a simple Android app that automates the Game Master role in the game [A Fake Artist Goes To New York](https://oinkgms.com/en/a-fake-artist-goes-to-new-york).
 Now everyone can participate in the drawing!
 
@@ -7,7 +7,21 @@ To use, simply enter the email addresses of all players and press Send Prompt.
 The app will automatically generate a random word and email it to all but one player. 
 The remaining player will receive an email informing them they are the fake artist.
 
-## Configuration ##
+The words are generated from a variety of categories with predefined weights that control their distribution.
+You can adjust these weights by clicking the tool icon in the top right of the main screen of the app.
+Note that the weights are relative to each other, so:
+```
+Category 1 = 1.0
+Category 2 = 0.5
+```
+is the same as:
+```
+Category 1 = 2.0 
+Category 2 = 1.0
+```
+In both cases `Category 1` will be used roughly twice as often as `Category 2`.
+
+## Build Configuration ##
 The app uses SendGrid to send emails, so you will have to place a valid API Key in the `local.properties` file of the project:
 
 ```
