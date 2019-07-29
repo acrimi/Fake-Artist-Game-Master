@@ -31,7 +31,7 @@ class WordGenerator {
     fun generateNewPrompt(): Prompt? {
         val category = getRandomCategory() ?: return null
         val url = GENERATOR_URL.format(category.id)
-        val word = URL(url).readText().split(',').random()
+        val word = URL(url).readText().split(',').filter { it.isNotBlank() }.random()
         return Prompt(word, category.name)
     }
 }
