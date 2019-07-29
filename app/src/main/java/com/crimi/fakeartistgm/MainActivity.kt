@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.crimi.fakeartistgm.databinding.ActivityMainBinding
+import com.crimi.fakeartistgm.generator.Prompt
 import com.crimi.fakeartistgm.generator.WordGenerator
 import com.sendgrid.SendGrid
 import com.sendgrid.SendGridException
@@ -69,40 +70,40 @@ class MainActivity : AppCompatActivity() {
     fun send(view: View) {
         binding.isSending = true
         Thread {
-            val clue: String
+            val prompt: Prompt
             try {
-                clue = wordGenerator.generateNewWord() ?:
+                prompt = wordGenerator.generateNewPrompt() ?:
                         return@Thread notifySendError(IOException("word generation failed"))
             } catch (e: IOException) {
                 notifySendError(e)
                 return@Thread
             }
-            val artists = emailAdapter.emails.shuffled().mapNotNullTo(mutableListOf()) { it.get() }
-            val impostor = artists.removeAt(0)
+            val artists = emailAdapter.emails.mapNotNullTo(mutableListOf()) { it.get() }
+            val fakeArtist = artists.removeAt(0)
             var sender = BuildConfig.CUSTOM_SENDER_EMAIL
             if (sender.isEmpty()) {
                 sender = "fakeartistgamebot@example.com"
             }
 
-            val clueEmail = SendGrid.Email()
-            clueEmail.addTo(artists.toTypedArray())
-            clueEmail.from = sender
-            clueEmail.fromName = "Fake Artist Game Bot"
-            clueEmail.subject = "Drawing Clue"
-            clueEmail.text = "The drawing clue is: \"$clue\""
+            val promptEmail = SendGrid.Email()
+            promptEmail.addTo(artists.toTypedArray())
+            promptEmail.from = sender
+            promptEmail.fromName = "Fake Artist Game Bot"
+            promptEmail.subject = "Drawing Prompt"
+            promptEmail.text = "The category is: \"${prompt.category}\"\nThe word to draw is: \"${prompt.word}\""
 
-            val impostorEmail = SendGrid.Email()
-            impostorEmail.addTo(impostor)
-            impostorEmail.from = sender
-            impostorEmail.fromName = "Fake Artist Game Bot"
-            impostorEmail.subject = "Drawing Clue"
-            impostorEmail.text = "You are the fake artist!"
+            val fakeArtistEmail = SendGrid.Email()
+            fakeArtistEmail.addTo(fakeArtist)
+            fakeArtistEmail.from = sender
+            fakeArtistEmail.fromName = "Fake Artist Game Bot"
+            fakeArtistEmail.subject = "Drawing Prompt"
+            fakeArtistEmail.text = "The category is: \"${prompt.category}\"\nYou are the fake artist!"
 
             try {
                 if (artists.size > 0) {
-                    sendGrid.send(clueEmail)
+                    sendGrid.send(promptEmail)
                 }
-                sendGrid.send(impostorEmail)
+                sendGrid.send(fakeArtistEmail)
                 notifySendSuccess()
             } catch (e: SendGridException) {
                 notifySendError(e)
@@ -115,7 +116,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun notifySendSuccess() {
         runOnUiThread {
-            Toast.makeText(this, "Clue emails have been sent!", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Prompt emails have been sent!", Toast.LENGTH_LONG).show()
             binding.isSending = false
             binding.executePendingBindings()
         }
@@ -124,7 +125,7 @@ class MainActivity : AppCompatActivity() {
     private fun notifySendError(e: Exception) {
         e.printStackTrace()
         runOnUiThread {
-            Toast.makeText(this, "Error sending clues: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Error sending prompts: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
             binding.isSending = false
             binding.executePendingBindings()
         }
