@@ -90,6 +90,7 @@ class MainActivity : AppCompatActivity() {
             promptEmail.from = sender
             promptEmail.fromName = "Fake Artist Game Bot"
             promptEmail.subject = "Drawing Prompt"
+            promptEmail.html = "The category is: <b>${prompt.category}</b><br/>The word to draw is: <b>${prompt.word}</b>"
             promptEmail.text = "The category is: \"${prompt.category}\"\nThe word to draw is: \"${prompt.word}\""
 
             val fakeArtistEmail = SendGrid.Email()
@@ -97,6 +98,7 @@ class MainActivity : AppCompatActivity() {
             fakeArtistEmail.from = sender
             fakeArtistEmail.fromName = "Fake Artist Game Bot"
             fakeArtistEmail.subject = "Drawing Prompt"
+            fakeArtistEmail.html = "The category is: <b>${prompt.category}</b><br/>You are the fake artist!"
             fakeArtistEmail.text = "The category is: \"${prompt.category}\"\nYou are the fake artist!"
 
             try {
