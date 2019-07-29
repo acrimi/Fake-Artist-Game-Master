@@ -7,12 +7,15 @@ private const val GENERATOR_URL = "https://www.wordgenerator.net/application/p.p
 
 class WordGenerator {
     var categories = listOf(
-        Category("General (moderate)", "charades_moderate", 1.0),
-        Category("General (hard)", "charades_hard", 1.0),
+        Category("General (Easy)", "charades_easy", 0.0),
+        Category("General (Moderate)", "charades_moderate", 1.0),
+        Category("General (Hard)", "charades_hard", 1.0),
+        Category("General (Very Hard)", "charades_very_hard", 0.0),
+        Category("Idiom", "idioms_popular", 0.0),
         Category("Animal", "animal_names", 1.0),
         Category("Movie", "movie_names_popular", .75),
         Category("TV Show", "tv_show_names_popular", .5),
-        Category("Character", "people_character_names_popular", .5),
+        Category("Person/Character", "people_character_names_popular", .5),
         Category("Book", "book_names_popular", .25)
     )
 
