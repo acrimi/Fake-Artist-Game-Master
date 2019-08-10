@@ -78,7 +78,7 @@ class MainActivity : AppCompatActivity() {
                 notifySendError(e)
                 return@Thread
             }
-            val artists = emailAdapter.emails.mapNotNullTo(mutableListOf()) { it.get() }
+            val artists = emailAdapter.emails.mapNotNullTo(mutableListOf()) { it.get() }.apply { shuffle()}
             val fakeArtist = artists.removeAt(0)
             var sender = BuildConfig.CUSTOM_SENDER_EMAIL
             if (sender.isEmpty()) {
