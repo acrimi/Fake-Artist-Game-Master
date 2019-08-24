@@ -17,6 +17,7 @@ import com.sendgrid.SendGrid
 import com.sendgrid.SendGridException
 import org.parceler.Parcels
 import java.io.IOException
+import kotlin.math.min
 
 private const val REQUEST_EDIT_SETTINGS = 1
 
@@ -26,6 +27,7 @@ class MainActivity : AppCompatActivity() {
     private val emailAdapter = EmailAdapter()
     private val sendGrid = SendGrid(BuildConfig.SEND_GRID_API_KEY)
     private val wordGenerator = WordGenerator()
+    private var fakeArtistCount = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +46,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_EDIT_SETTINGS && resultCode == Activity.RESULT_OK) {
-            wordGenerator.categories = Parcels.unwrap(data?.getParcelableExtra(EXTRA_SETTINGS_CATEGORIES))
+            data?.let {
+                wordGenerator.categories = Parcels.unwrap(it.getParcelableExtra(EXTRA_SETTINGS_CATEGORIES))
+                fakeArtistCount = it.getIntExtra(EXTRA_SETTINGS_FAKE_ARTIST_COUNT, fakeArtistCount)
+            }
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
@@ -60,6 +65,7 @@ class MainActivity : AppCompatActivity() {
     private fun settingsClicked() {
         val intent = Intent(this, SettingsActivity::class.java)
         intent.putExtra(EXTRA_SETTINGS_CATEGORIES, Parcels.wrap(ArrayList(wordGenerator.categories)))
+        intent.putExtra(EXTRA_SETTINGS_FAKE_ARTIST_COUNT, fakeArtistCount)
         startActivityForResult(intent, REQUEST_EDIT_SETTINGS)
     }
 
@@ -79,7 +85,8 @@ class MainActivity : AppCompatActivity() {
                 return@Thread
             }
             val artists = emailAdapter.emails.mapNotNullTo(mutableListOf()) { it.get() }.apply { shuffle()}
-            val fakeArtist = artists.removeAt(0)
+            val fakeArtists = artists.take(min(fakeArtistCount, artists.size))
+            artists.removeAll(fakeArtists)
             var sender = BuildConfig.CUSTOM_SENDER_EMAIL
             if (sender.isEmpty()) {
                 sender = "fakeartistgamebot@example.com"
@@ -94,7 +101,7 @@ class MainActivity : AppCompatActivity() {
             promptEmail.text = "The category is: \"${prompt.category}\"\nThe word to draw is: \"${prompt.word}\""
 
             val fakeArtistEmail = SendGrid.Email()
-            fakeArtistEmail.addTo(fakeArtist)
+            fakeArtistEmail.addTo(fakeArtists.toTypedArray())
             fakeArtistEmail.from = sender
             fakeArtistEmail.fromName = "Fake Artist Game Bot"
             fakeArtistEmail.subject = "Drawing Prompt"
@@ -105,7 +112,9 @@ class MainActivity : AppCompatActivity() {
                 if (artists.size > 0) {
                     sendGrid.send(promptEmail)
                 }
-                sendGrid.send(fakeArtistEmail)
+                if (fakeArtists.size > 0) {
+                    sendGrid.send(fakeArtistEmail)
+                }
                 notifySendSuccess()
             } catch (e: SendGridException) {
                 notifySendError(e)
